@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/Mabbi.obj-e77de6a5c8d1fd43dbfb550cfc3d8914.mesh"
+
+[deps]
+
+files=[ "res://.import/Mabbi.obj-e77de6a5c8d1fd43dbfb550cfc3d8914.mesh" ]
+
+source_file="res://Assets/Mabbi.obj"
+dest_files=[ "res://.import/Mabbi.obj-e77de6a5c8d1fd43dbfb550cfc3d8914.mesh", "res://.import/Mabbi.obj-e77de6a5c8d1fd43dbfb550cfc3d8914.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

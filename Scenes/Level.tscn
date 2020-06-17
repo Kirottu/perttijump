@@ -1,0 +1,104 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Scenes/Pertti.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Level.gd" type="Script" id=2]
+[ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=3]
+[ext_resource path="res://Terrain/Terrain1/data.hterrain" type="Resource" id=4]
+[ext_resource path="res://Assets/Textures/Terrain/Stylized_Grass_001_basecolor.jpg" type="Texture" id=5]
+[ext_resource path="res://Assets/Textures/Terrain/Stylized_Grass_001_normal.jpg" type="Texture" id=6]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 10, 1, 10 )
+
+[sub_resource type="CubeMesh" id=2]
+size = Vector3( 20, 2, 20 )
+
+[sub_resource type="ProceduralSky" id=3]
+sky_top_color = Color( 0.211765, 0.313726, 0.552941, 1 )
+sky_horizon_color = Color( 0.545098, 0.686275, 0.811765, 1 )
+sky_curve = 0.127279
+ground_bottom_color = Color( 0.545098, 0.686275, 0.811765, 1 )
+ground_horizon_color = Color( 0.545098, 0.686275, 0.811765, 1 )
+sun_angle_max = 30.0
+sun_energy = 30.0
+
+[sub_resource type="Environment" id=4]
+background_mode = 2
+background_sky = SubResource( 3 )
+ambient_light_color = Color( 0.5, 0.5, 0.5, 1 )
+ambient_light_sky_contribution = 0.27
+ss_reflections_enabled = true
+ssao_enabled = true
+ssao_radius = 128.0
+dof_blur_near_enabled = true
+
+[node name="Level" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="Plane" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 130.745, 73.5826 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Plane"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Plane"]
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Plane2" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 130.745, 107.008 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Plane2"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Plane2"]
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Plane3" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 34.9267, 130.745, 107.008 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Plane3"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Plane3"]
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Pertti" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.04725, 134.558, 64.6372 )
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Crosshair" type="ColorRect" parent="HUD"]
+margin_right = 5.0
+margin_bottom = 5.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 4 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
+transform = Transform( 1, 0, 0, 0, -0.832602, 0.553871, 0, -0.553871, -0.832602, 0.657132, 2.393, 0 )
+shadow_enabled = true
+
+[node name="HTerrain" type="Spatial" parent="."]
+script = ExtResource( 3 )
+ambient_wind = 1.0
+_terrain_data = ExtResource( 4 )
+chunk_size = 32
+shader_type = "Classic4Lite"
+custom_shader = null
+shader_params/u_ground_uv_scale = 5.0
+shader_params/u_depth_blending = true
+shader_params/u_triplanar = false
+ground/albedo_bump_0 = ExtResource( 5 )
+ground/normal_roughness_0 = ExtResource( 6 )
+ground/albedo_bump_1 = null
+ground/normal_roughness_1 = null
+ground/albedo_bump_2 = null
+ground/normal_roughness_2 = null
+ground/albedo_bump_3 = null
+ground/normal_roughness_3 = null
