@@ -60,7 +60,7 @@ func process_input(delta):
 	# ----------------------------------
 	process_movement(delta, Input.is_action_pressed("sprint"))
 	
-func process_movement(delta, sprinting : bool):
+func process_movement(delta, sprinting):
 	dir.y = 0
 	dir = dir.normalized()
 
@@ -77,16 +77,18 @@ func process_movement(delta, sprinting : bool):
 		accel = ACCEL
 	else:
 		accel = DEACCEL
-
-	hvel = hvel.linear_interpolate(target, accel * delta)
-	if sprinting:
+		
+	if is_on_floor():
+		hvel = hvel.linear_interpolate(target, accel * delta)
+	
+	if sprinting && is_on_floor():
 		vel.x = hvel.x * Settings.SPRINT_MODIFIER
 		vel.z = hvel.z * Settings.SPRINT_MODIFIER
 	else:
 		vel.x = hvel.x
 		vel.z = hvel.z
 	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
-
+#this comment is useless, just like our lazy artists
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotation_helper.rotate_x(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))

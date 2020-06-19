@@ -65,6 +65,16 @@ shape = SubResource( 1 )
 mesh = SubResource( 2 )
 material/0 = null
 
+[node name="Plane4" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 34.9267, 1.98589, 271.106 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Plane4"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Plane4"]
+mesh = SubResource( 2 )
+material/0 = null
+
 [node name="Pertti" parent="." instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.04725, 134.558, 64.6372 )
 
