@@ -8,6 +8,9 @@ const ACCEL = 4.5
 
 var dir = Vector3()
 
+var energy = 5
+var sprinting  = false
+
 const DEACCEL= 16
 const MAX_SLOPE_ANGLE = 40
 
@@ -21,11 +24,16 @@ func _ready():
 
 func _physics_process(delta):
 	process_input(delta)
+	if energy < 5 && !sprinting:
+		energy += delta * Settings.energy_regen_factor
+		
+	if energy > 5:
+		energy = 5
+	
+	sprinting = sprinting && energy > 0
 
 func process_input(delta):
 
-	# ----------------------------------
-	# Walking
 	dir = Vector3()
 	var cam_xform = camera.get_global_transform()
 
@@ -41,26 +49,26 @@ func process_input(delta):
 	# Basis vectors are already normalized.
 	dir += -cam_xform.basis.z * input_movement_vector.y
 	dir += cam_xform.basis.x * input_movement_vector.x
-	# ----------------------------------
-
-	# ----------------------------------
-	# Jumping
+	
 	if is_on_floor():
 		if Input.is_action_just_pressed("movement_jump"):
 			vel.y = JUMP_SPEED
-	# ----------------------------------
-
-	# ----------------------------------
+	
 	# Capturing/Freeing the cursor
 	if Input.is_action_just_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	# ----------------------------------
-	process_movement(delta, Input.is_action_pressed("sprint"))
 	
-func process_movement(delta, sprinting):
+	sprinting = sprinting || Input.is_action_just_pressed("sprint") && energy > 2
+	
+	sprinting = sprinting && !Input.is_action_just_released("sprint")
+	
+	process_movement(delta)
+	
+func process_movement(delta):
+	
 	dir.y = 0
 	dir = dir.normalized()
 
@@ -84,10 +92,17 @@ func process_movement(delta, sprinting):
 	if sprinting && is_on_floor():
 		vel.x = hvel.x * Settings.SPRINT_MODIFIER
 		vel.z = hvel.z * Settings.SPRINT_MODIFIER
+		energy -= Settings.sprinting_tiring_factor * delta
+		print(energy)
 	else:
 		vel.x = hvel.x
 		vel.z = hvel.z
+	
+	if energy < 0:
+		energy = 0
+	print(energy)
 	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
+
 #this comment is useless, just like our lazy artists
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
