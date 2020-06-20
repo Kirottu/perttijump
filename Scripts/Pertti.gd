@@ -31,6 +31,8 @@ func _physics_process(delta):
 		energy = 5
 	
 	sprinting = sprinting && energy > 0
+	
+	get_parent().get_node("HUD/energyBar").set_value(energy)
 
 func process_input(delta):
 
