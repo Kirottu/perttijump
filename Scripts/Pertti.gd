@@ -32,7 +32,7 @@ func _physics_process(delta):
 	
 	sprinting = sprinting && energy > 0
 	
-	get_parent().get_node("HUD/energyBar").set_value(energy)
+	get_parent().get_node("HUD/energyBar").set_value(energy) #should only be after updating but das spaget
 
 func process_input(delta):
 
@@ -95,7 +95,7 @@ func process_movement(delta):
 		vel.x = hvel.x * Settings.SPRINT_MODIFIER
 		vel.z = hvel.z * Settings.SPRINT_MODIFIER
 		energy -= Settings.sprinting_tiring_factor * delta
-		print(energy)
+
 	else:
 		vel.x = hvel.x
 		vel.z = hvel.z
