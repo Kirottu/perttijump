@@ -45,22 +45,14 @@ func process_input(delta):
 	dir = Vector3()
 	var cam_xform = camera.get_global_transform()
 
-	var input_movement_vector = Vector2()
-
-	input_movement_vector.y += int(Input.is_action_pressed("movement_forward"))
-	input_movement_vector.y -= int(Input.is_action_pressed("movement_backward"))
-	input_movement_vector.x -= int(Input.is_action_pressed("movement_left"))
-	input_movement_vector.x += int(Input.is_action_pressed("movement_right"))
-
-	input_movement_vector = input_movement_vector.normalized()
+	var input_movement_vector = Vector2(int(Input.is_action_pressed("movement_right")) - int(Input.is_action_pressed("movement_left")), int(Input.is_action_pressed("movement_forward")) - int(Input.is_action_pressed("movement_backward"))).normalized()
 
 	# Basis vectors are already normalized.
 	dir += -cam_xform.basis.z * input_movement_vector.y
 	dir += cam_xform.basis.x * input_movement_vector.x
 	
-	if is_on_floor():
-		if Input.is_action_just_pressed("movement_jump"):
-			vel.y = JUMP_SPEED
+	if Input.is_action_just_pressed("movement_jump") && is_on_floor():
+		vel.y = JUMP_SPEED
 	
 	# Capturing/Freeing the cursor
 	if Input.is_action_just_pressed("ui_cancel"):
