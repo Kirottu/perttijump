@@ -88,7 +88,7 @@ func process_movement(delta):
 	else:
 		accel = DEACCEL
 		
-	if is_on_floor():
+	if is_on_floor() || Settings.can_steer_midair:
 		hvel = hvel.linear_interpolate(target, accel * delta)
 	
 	if sprinting && is_on_floor():
