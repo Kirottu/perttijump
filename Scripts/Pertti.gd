@@ -9,7 +9,7 @@ const ACCEL = 4.5
 var dir = Vector3()
 
 var energy = 5
-var sprinting  = false
+var sprinting = false
 
 const DEACCEL= 16
 const MAX_SLOPE_ANGLE = 40
@@ -102,7 +102,6 @@ func process_movement(delta):
 	
 	if energy < 0:
 		energy = 0
-	print(energy)
 	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
 
 #this comment is useless, just like our lazy artists
