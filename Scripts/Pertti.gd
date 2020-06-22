@@ -3,25 +3,15 @@ extends KinematicBody
 onready var score_label = get_parent().get_node("HUD/Score")
 onready var energy_bar = get_parent().get_node("HUD/Energy")
 
-const GRAVITY = -24.8
 var vel = Vector3()
-const MAX_SPEED = 20
-const JUMP_SPEED = 18
-const ACCEL = 4.5
-
 var dir = Vector3()
 
 var score = 0
 var energy = 5
 var sprinting = false
 
-const DEACCEL= 16
-const MAX_SLOPE_ANGLE = 40
-
 onready var camera = $Rotation_Helper/Camera
 onready var rotation_helper = $Rotation_Helper
-
-var MOUSE_SENSITIVITY = 0.1
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -42,7 +32,7 @@ func process_input(delta):
 	dir = Vector3(cam_xform.basis.x * input_movement_vector.x - cam_xform.basis.z * input_movement_vector.y)
 
 	if Input.is_action_just_pressed("movement_jump") && is_on_floor():
-		vel.y = JUMP_SPEED
+		vel.y = Settings.jump_speed
 	
 	# Capturing/Freeing the cursor
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -64,14 +54,14 @@ func process_movement(delta):
 	dir.y = 0
 	dir = dir.normalized()
 
-	vel.y += delta * GRAVITY
+	vel.y += delta * Settings.gravity
 
 	var hvel = vel
 	hvel.y = 0
 
-	var target = dir * MAX_SPEED
+	var target = dir * Settings.max_speed
 
-	var accel = ACCEL if dir.dot(hvel) > 0 else DEACCEL
+	var accel = Settings.accel if dir.dot(hvel) > 0 else Settings.deaccel
 		
 	if is_on_floor() || Settings.can_steer_midair:
 		hvel = hvel.linear_interpolate(target, accel * delta)
@@ -83,13 +73,13 @@ func process_movement(delta):
 	else:
 		vel = Vector3(hvel.x, vel.y, hvel.z)
 	
-	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
+	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(Settings.max_slope_angle))
 
 #this comment is useless, just like our lazy artists
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		rotation_helper.rotate_x(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-		self.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
+		rotation_helper.rotate_x(deg2rad(event.relative.y * Settings.mouse_sensitivity * -1))
+		self.rotate_y(deg2rad(event.relative.x * Settings.mouse_sensitivity * -1))
 
 		var camera_rot = rotation_helper.rotation_degrees
 		camera_rot.x = clamp(camera_rot.x, -70, 70)
