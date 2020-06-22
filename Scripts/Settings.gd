@@ -1,7 +1,7 @@
 extends Node
 
 const SPRINT_MODIFIER = 1.1				#with how much pertti's speed is multiplied per physics frame while sprinting
-const energy_regen_factor = 5 			#how much health pertti should gain per second while sprinting
-const sprinting_tiring_factor = 10 		#how much health pertti should lose per second while sprinting
+const energy_regen_factor = 2 			#how much health pertti should gain per second while sprinting
+const sprinting_tiring_factor = 5 		#how much health pertti should lose per second while sprinting
 const sprinting_start_treshold = 2 		#how much energy is needed in order to start sprinting
-const can_steer_midair = false
+const can_steer_midair = false			#wether pertti can sprint while falling or not

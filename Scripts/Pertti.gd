@@ -29,28 +29,18 @@ func _ready():
 func _physics_process(delta):
 	process_input(delta)
 	if energy < 5 && !sprinting:
-		energy += delta * Settings.energy_regen_factor
-		
-	energy = clamp(energy, 0, 5)
+		update_energy(delta * Settings.energy_regen_factor, false)
 	
 	sprinting = sprinting && energy > 0
 	
-	energy_bar.set_value(energy) #should only be after updating but das spaget
 	score_label.text = str(score)
-	
-	print(score)
+
 
 func process_input(delta):
-
-	dir = Vector3()
 	var cam_xform = camera.get_global_transform()
-
 	var input_movement_vector = Vector2(int(Input.is_action_pressed("movement_right")) - int(Input.is_action_pressed("movement_left")), int(Input.is_action_pressed("movement_forward")) - int(Input.is_action_pressed("movement_backward"))).normalized()
+	dir = Vector3(cam_xform.basis.x * input_movement_vector.x - cam_xform.basis.z * input_movement_vector.y)
 
-	# Basis vectors are already normalized.
-	dir += -cam_xform.basis.z * input_movement_vector.y
-	dir += cam_xform.basis.x * input_movement_vector.x
-	
 	if Input.is_action_just_pressed("movement_jump") && is_on_floor():
 		vel.y = JUMP_SPEED
 	
@@ -60,6 +50,8 @@ func process_input(delta):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
+	print(Input.get_mouse_mode())
 	
 	sprinting = sprinting || Input.is_action_just_pressed("sprint") && energy > 2
 	
@@ -77,14 +69,9 @@ func process_movement(delta):
 	var hvel = vel
 	hvel.y = 0
 
-	var target = dir
-	target *= MAX_SPEED
+	var target = dir * MAX_SPEED
 
-	var accel
-	if dir.dot(hvel) > 0:
-		accel = ACCEL
-	else:
-		accel = DEACCEL
+	var accel = ACCEL if dir.dot(hvel) > 0 else DEACCEL
 		
 	if is_on_floor() || Settings.can_steer_midair:
 		hvel = hvel.linear_interpolate(target, accel * delta)
@@ -92,11 +79,9 @@ func process_movement(delta):
 	if sprinting && is_on_floor():
 		vel.x = hvel.x * Settings.SPRINT_MODIFIER
 		vel.z = hvel.z * Settings.SPRINT_MODIFIER
-		energy -= Settings.sprinting_tiring_factor * delta
-
+		update_energy(-Settings.sprinting_tiring_factor * delta, false)
 	else:
-		vel.x = hvel.x
-		vel.z = hvel.z
+		vel = Vector3(hvel.x, vel.y, hvel.z)
 	
 	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
 
@@ -109,3 +94,12 @@ func _input(event):
 		var camera_rot = rotation_helper.rotation_degrees
 		camera_rot.x = clamp(camera_rot.x, -70, 70)
 		rotation_helper.rotation_degrees = camera_rot
+
+func update_energy(value, absolute):
+	if absolute:
+		energy = value
+	else:
+		energy += value
+	
+	energy = clamp(energy, 0, 5)
+	energy_bar.set_value(energy)
