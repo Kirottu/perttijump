@@ -1,5 +1,8 @@
 extends KinematicBody
 
+onready var score_label = get_parent().get_node("HUD/Score")
+onready var energy_bar = get_parent().get_node("HUD/Energy")
+
 const GRAVITY = -24.8
 var vel = Vector3()
 const MAX_SPEED = 20
@@ -8,6 +11,7 @@ const ACCEL = 4.5
 
 var dir = Vector3()
 
+var score = 0
 var energy = 5
 var sprinting = false
 
@@ -27,12 +31,14 @@ func _physics_process(delta):
 	if energy < 5 && !sprinting:
 		energy += delta * Settings.energy_regen_factor
 		
-	if energy > 5:
-		energy = 5
+	energy = clamp(energy, 0, 5)
 	
 	sprinting = sprinting && energy > 0
 	
-	get_parent().get_node("HUD/energyBar").set_value(energy) #should only be after updating but das spaget
+	energy_bar.set_value(energy) #should only be after updating but das spaget
+	score_label.text = str(score)
+	
+	print(score)
 
 func process_input(delta):
 
@@ -100,8 +106,6 @@ func process_movement(delta):
 		vel.x = hvel.x
 		vel.z = hvel.z
 	
-	if energy < 0:
-		energy = 0
 	vel = move_and_slide(vel, Vector3(0, 1, 0), 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
 
 #this comment is useless, just like our lazy artists
