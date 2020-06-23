@@ -6,8 +6,8 @@ onready var energy_bar = get_parent().get_node("HUD/Energy")
 var vel = Vector3()
 var dir = Vector3()
 
-var score = 0
-var energy = 5
+var score
+var energy
 var sprinting = false
 
 onready var camera = $Rotation_Helper/Camera
@@ -15,6 +15,8 @@ onready var rotation_helper = $Rotation_Helper
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	update_score(0, true)
+	update_energy(5, true)
 
 func _physics_process(delta):
 	process_input(delta)
@@ -22,8 +24,6 @@ func _physics_process(delta):
 		update_energy(delta * Settings.energy_regen_factor, false)
 	
 	sprinting = sprinting && energy > 0
-	
-	score_label.text = str(score)
 
 
 func process_input(delta):
@@ -84,6 +84,14 @@ func _input(event):
 		var camera_rot = rotation_helper.rotation_degrees
 		camera_rot.x = clamp(camera_rot.x, -70, 70)
 		rotation_helper.rotation_degrees = camera_rot
+
+func update_score(value, absolute):
+	if absolute:
+		score = value
+	else:
+		score += value
+	
+	score_label.text = str(score)
 
 func update_energy(value, absolute):
 	if absolute:
